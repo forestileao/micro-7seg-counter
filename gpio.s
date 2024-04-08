@@ -128,7 +128,7 @@ EsperaGPIO  LDR     R1, [R0]						;L� da mem�ria o conte�do do endere�o 
             MOV     R1, #0x00						;Colocar 0 no registrador para desabilitar a fun��o anal�gica
             LDR     R0, =GPIO_PORTJ_AHB_AMSEL_R     ;Carrega o R0 com o endere�o do AMSEL para a porta J
             STR     R1, [R0]						;Guarda no registrador AMSEL da porta J da mem�ria
-            LDR     R0, =GPIO_PORTA_AMSEL_R			;Carrega o R0 com o endere�o do AMSEL para a porta A
+            LDR     R0, =GPIO_PORTA_AHB_AMSEL_R			;Carrega o R0 com o endere�o do AMSEL para a porta A
             STR     R1, [R0]					    ;Guarda no registrador AMSEL da porta N da mem�ria
             LDR     R0, =GPIO_PORTB_AHB_AMSEL_R		;Carrega o R0 com o endere�o do AMSEL para a porta B
             STR     R1, [R0]					    ;Guarda no registrador AMSEL da porta B da mem�ria
@@ -141,7 +141,7 @@ EsperaGPIO  LDR     R1, [R0]						;L� da mem�ria o conte�do do endere�o 
             MOV     R1, #0x00					    ;Colocar 0 no registrador para selecionar o modo GPIO
             LDR     R0, =GPIO_PORTJ_AHB_PCTL_R		;Carrega o R0 com o endere�o do PCTL para a porta J
             STR     R1, [R0]                        ;Guarda no registrador PCTL da porta J da mem�ria
-            LDR     R0, =GPIO_PORTA_PCTL_R      	;Carrega o R0 com o endere�o do PCTL para a porta A
+            LDR     R0, =GPIO_PORTA_AHB_PCTL_R      	;Carrega o R0 com o endere�o do PCTL para a porta A
             STR     R1, [R0]                        ;Guarda no registrador PCTL da porta N da mem�ria
             LDR     R0, =GPIO_PORTB_AHB_PCTL_R		;Carrega o R0 com o endere�o do PCTL para a porta B
             STR     R1, [R0]                        ;Guarda no registrador PCTL da porta B da mem�ria
@@ -174,7 +174,7 @@ EsperaGPIO  LDR     R1, [R0]						;L� da mem�ria o conte�do do endere�o 
 ; 5. Limpar os bits AFSEL para 0 para selecionar GPIO
 ;    Sem fun��o alternativa
             MOV     R1, #0x00						;Colocar o valor 0 para n�o setar fun��o alternativa
-            LDR     R0, =GPIO_PORTA_AFSEL_R			;Carrega o endere�o do AFSEL da porta A
+            LDR     R0, =GPIO_PORTA_AHB_AFSEL_R			;Carrega o endere�o do AFSEL da porta A
             STR     R1, [R0]						;Escreve na porta
 
             LDR     R0, =GPIO_PORTB_AHB_AFSEL_R		;Carrega o endere�o do AFSEL da porta B
@@ -189,7 +189,7 @@ EsperaGPIO  LDR     R1, [R0]						;L� da mem�ria o conte�do do endere�o 
             LDR     R0, =GPIO_PORTJ_AHB_AFSEL_R     ;Carrega o endere�o do AFSEL da porta J
             STR     R1, [R0]                        ;Escreve na porta
 ; 6. Setar os bits de DEN para habilitar I/O digital
-            LDR     R0, =GPIO_PORTA_DEN_R			    ;Carrega o endere�o do DEN
+            LDR     R0, =GPIO_PORTA_AHB_DEN_R			    ;Carrega o endere�o do DEN
             MOV     R1, #2_11110000                     ;PA4 ao PA7
             STR     R1, [R0]							;Escreve no registrador da mem�ria funcionalidade digital
 
@@ -214,19 +214,6 @@ EsperaGPIO  LDR     R1, [R0]						;L� da mem�ria o conte�do do endere�o 
 			MOV     R1, 2_00000011							;Habilitar funcionalidade digital de resistor de pull-up
             STR     R1, [R0]							;Escreve no registrador da mem�ria do resistor de pull-up
 			BX      LR
-
-; -------------------------------------------------------------------------------
-; Fun��o PortN_Output
-; Par�metro de entrada: R0 --> se o BIT1 est� ligado ou desligado
-; Par�metro de sa�da: N�o tem
-PortN_Output
-	LDR	R1, =GPIO_PORTN_DATA_R		    ;Carrega o valor do offset do data register
-	;Read-Modify-Write para escrita
-	LDR R2, [R1]
-	BIC R2, #2_00000010                     ;Primeiro limpamos os dois bits do lido da porta R2 = R2 & 11111101
-	ORR R0, R0, R2                          ;Fazer o OR do lido pela porta com o par�metro de entrada
-	STR R0, [R1]                            ;Escreve na porta N o barramento de dados do pino N1
-	BX LR									;Retorno
 
 
 ; -------------------------------------------------------------------------------
